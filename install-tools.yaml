@@ -1,0 +1,11 @@
+- name: Test
+  hosts: server1
+  any_errors_fatal: true
+  roles:
+    - base
+
+- name: Test
+  hosts: server1
+  tags: "docker"
+  roles:
+    - docker

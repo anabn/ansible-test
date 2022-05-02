@@ -1,0 +1,21 @@
+- name: "Remove all containers"
+  shell: "docker ps -qa | xargs --no-run-if-empty docker rm --force"
+
+- name: "Remove all images"
+  shell: "docker images -qa | xargs --no-run-if-empty docker rmi -f"
+
+- name: "Stop docker service"
+  ignore_errors: yes
+  service:
+    name: docker
+    state: stopped
+    enabled: no
+
+- name: "Uninstalling docker"
+  ignore_errors: yes
+  apt:
+    pkg: docker.io
+    state: absent
+
+- name: "Clean up volumes"
+  shell:  "rm -rf /var/lib/containerd /var/lib/docker"

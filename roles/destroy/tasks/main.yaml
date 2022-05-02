@@ -1,0 +1,8 @@
+- name: "Remove tools from env"
+  include: "../../{{ tool }}/tasks/uninstall.yaml"
+  ignore_errors: yes
+  any_errors_fatal: false
+  loop_control:
+    loop_var: tool
+  with_items:
+    - docker

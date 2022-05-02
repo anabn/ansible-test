@@ -2,4 +2,8 @@
 server1 ansible_host=192.168.57.3
 
 [desktops]
-desktop1 ansible_host=192.168.56.101
+desktop1 ansible_host=192.168.178.106
+
+[all:vars]
+ansible_become=true
+ansible_become_pass=1234
