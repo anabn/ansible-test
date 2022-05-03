@@ -4,6 +4,14 @@
     state: present
     update_cache: yes
 
+# temp fixing for problem with docker.service
+- name: "Apply new settings"
+  ignore_errors: true
+  shell: |
+    sudo systemctl daemon-reload
+    sudo systemctl restart docker
+
+
 - name: "Checking if docker was started and enabled"
   service:
     name: docker
