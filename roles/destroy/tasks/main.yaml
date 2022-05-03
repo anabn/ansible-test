@@ -5,4 +5,5 @@
   loop_control:
     loop_var: tool
   with_items:
+    - k8s
     - docker

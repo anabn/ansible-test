@@ -1,11 +1,23 @@
-- name: Test
+- name: 'Update env'
   hosts: server1
   any_errors_fatal: true
   roles:
     - base
 
-- name: Test
+- name: 'Installing docker'
   hosts: server1
   tags: "docker"
   roles:
     - docker
+
+- name: 'Installing k8s'
+  hosts: server1
+  tags: "k8s"
+  roles:
+    - k8s
+
+- name: 'Prepare master node'
+  hosts: server1
+  tags: ['k8s', 'k8s-master']
+  roles:
+    - k8s-master

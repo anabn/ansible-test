@@ -1,0 +1,57 @@
+- name: "Stop k8s services"
+  service: name={{ item }} state=stopped
+  ignore_errors: yes
+  with_items:
+    - kubelet
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+
+- name: "Kill all containers"
+  shell: "docker ps -qa | xargs --no-run-if-empty docker kill"
+  ignore_errors: yes
+
+- name: "Delete executable links"
+  file:
+    path: "/opt/avid/kubernetes/bin/{{ item }}"
+    state: absent
+  ignore_errors: yes
+  with_items:
+    - kubelet
+    - kube-proxy
+    - kubectl
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-dns
+    - kubectl
+    - kube-scheduler
+
+- name: "Delete kublete worker dir"
+  ignore_errors: yes
+  file:
+    path: "/var/lib/kubelet"
+    state: absent
+    
+- name: "Delete other directories"
+  file:
+    path: "/opt/avid/kubernetes/bin/{{ item }}"
+    state: absent
+  with_items:
+    - /var/lib/kube-dns
+    - /var/lib/kubernetes-dashboard
+    - /var/lib/flannel
+    - /var/lib/kube-proxy
+    - /var/lib/tiller
+    - /var/lib/kube-apiserver/
+    - /usr/lib/systemd/system/kube-apiserver.service
+    - /usr/lib/systemd/system/kube-controller-manager.service
+    - /usr/lib/systemd/system/kube-scheduler.service
+    - /usr/lib/systemd/system/kubelet.service
+    - /etc/keepalived/health.d/
+
+# - name: Uninstall k8s from master nodes
+#   apt: name={{ item }} state=absent
+#   with_items:
+#     - kubectl
+#     - kubelet
+#     - kubeadm
