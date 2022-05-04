@@ -1,5 +1,5 @@
 - name: "Clean up env"
-  hosts: server1
+  hosts: all
   any_errors_fatal: true
   roles:
     - destroy
