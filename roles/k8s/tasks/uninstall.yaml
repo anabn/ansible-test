@@ -49,9 +49,11 @@
     - /usr/lib/systemd/system/kubelet.service
     - /etc/keepalived/health.d/
 
-# - name: Uninstall k8s from master nodes
-#   apt: name={{ item }} state=absent
-#   with_items:
-#     - kubectl
-#     - kubelet
-#     - kubeadm
+- name: Uninstall k8s from master nodes
+  shell: "sudo apt-get remove -y kubectl kubelet kubeadm --allow-change-held-packages"
+
+  # apt: name={{ item }} state=absent -y
+  # with_items:
+  #   - kubectl
+  #   - kubelet
+  #   - kubeadm

@@ -3,30 +3,46 @@
   shell: "sudo swapoff -a"
 
 - name: "initialize the cluster"
-  shell: "sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --ignore-preflight-errors=NumCPU"
+  # shell: "sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU"
+  shell: "sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU"
   register: result
+  until: result.stdout.find("Your Kubernetes master has initialized successfully!") != -1
+  retries: 1
+  delay: 30
   failed_when: "'Permission denied' in result.stdout"
+
+- name: Check admin.conf file exists.
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: k8s_conf
 
 - name: "create .kube directory"
   file:
     path: $HOME/.kube
     state: directory
-    mode: 0755
+    mode: 0700
 
 - name: "copies admin.conf to user's kube config"
   copy:
-    src: /etc/kubernetes/admin.conf
-    dest: $HOME/.kube/config
+    src: /etc/kubernetes/admin.conf 
+    dest: $HOME/.kube/config 
+    mode: 0600
     remote_src: yes
 
-- name: "install Pod network"
-  shell: |
-    "curl https://docs.projectcalico.org/v3.7/manifests/calico.yaml -O"
-    "kubectl apply -f calico.yaml"
-    "kubectl taint nodes --all node-role.kubernetes.io/master-"
-  # kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml 
-  register: result
-  failed_when: "'Permission denied' in result.stdout"
+# //check 
+# - name: "apply yaml"
+#   shell: "kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml "
+
+
+#  -- remove 
+# - name: "install Pod network"
+#   shell: |
+#     "curl https://docs.projectcalico.org/v3.7/manifests/calico.yaml -O"
+#     "kubectl apply -f calico.yaml"
+#     "kubectl taint nodes --all node-role.kubernetes.io/master-"
+#   # kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml 
+#   register: result
+#   failed_when: "'Permission denied' in result.stdout"
 
 # - name: "Get the token for joining the worker nodes"
 #   shell: kubeadm token create  --print-join-command
