@@ -1,5 +1,0 @@
-- name: "Clean up env"
-  hosts: all
-  any_errors_fatal: true
-  roles:
-    - destroy

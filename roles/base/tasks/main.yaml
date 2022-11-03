@@ -1,6 +1,0 @@
-- name: "Installing aptitude"
-  apt:
-    name: aptitude
-    state: present
-    update_cache: yes
-    force_apt_get: yes
